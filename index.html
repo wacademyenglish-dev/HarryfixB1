@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOLFLIX | Harry Potter: The New Era (B1) - Magical Edition</title>
+    <!-- Fontes Épicas -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #030408; 
+            --brand-red: #E50914; 
+            --magic-gold: #D4AF37;
+            --magic-cyan: #00E5FF;
+            --text-main: #FFFFFF;
+            --text-muted: #A0A0B0;
+            --glass-bg: rgba(10, 12, 20, 0.7);
+            --glass-border: rgba(212, 175, 55, 0.2); 
+            --font-title: 'Cinzel', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base do Layout */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow: hidden; 
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Atmosfera Visual */
+        .ambient-orbs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            animation: floatOrb 25s infinite ease-in-out alternate;
+        }
+        .orb-1 { width: 50vw; height: 50vw; background: var(--magic-cyan); top: -10%; left: -10%; }
+        .orb-2 { width: 60vw; height: 60vw; background: var(--magic-gold); bottom: -20%; right: -10%; animation-delay: -7s; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(120px, 120px) scale(1.3); }
+        }
+
+        /* Header Estilo Netflix */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 5%;
+            background: linear-gradient(to bottom, rgba(3,4,8,1) 0%, rgba(3,4,8,0) 100%);
+            position: fixed;
+            top: 0; width: 100%; z-index: 100;
+        }
+        .logo { color: var(--brand-red); font-family: var(--font-title); font-size: 38px; font-weight: 900; letter-spacing: 4px; text-shadow: 0 0 15px rgba(229,9,20,0.5); }
+        .labs-badge { border: 1px solid var(--magic-gold); color: var(--magic-gold); font-size: 11px; padding: 4px 10px; font-weight: bold; border-radius: 4px; text-transform: uppercase; }
+        
+        .nav-controls { display: flex; gap: 15px; }
+        .icon-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--magic-cyan); }
+
+        /* Slides Container */
+        .slide-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: var(--magic-gold) transparent;
+        }
+
+        .slide {
+            min-height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Margem inferior gigante para não bater no hub */
+            padding: 130px 8% 480px 8%; 
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .slide.active { display: flex; opacity: 1; }
+        .content-wrapper { max-width: 1150px; width: 100%; text-align: center; }
+
+        h1 { font-family: var(--font-title); font-size: 5rem; letter-spacing: 4px; text-shadow: 0 0 30px rgba(212,175,55,0.4); margin-bottom: 25px; }
+        h2 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 30px; color: var(--magic-gold); }
+        h2.red-title { color: var(--brand-red); font-size: 3.5rem; }
+        p { font-size: 1.5rem; line-height: 1.8; color: #ffffff; margin-bottom: 35px; }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.85);
+            text-align: left;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* Lista de Áudio (Conforme Imagem) */
+        .dark-list {
+            list-style: none;
+            text-align: left;
+            margin: 0 auto;
+            max-width: 850px;
+        }
+        .dark-list li {
+            font-size: 1.7rem;
+            margin-bottom: 30px;
+            color: #eeeeee;
+            line-height: 1.7;
+        }
+        .dark-list li::before {
+            content: '•';
+            color: #666;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 35px; width: 100%; }
+
+        .try-btn {
+            background: rgba(20, 25, 35, 0.9);
+            border: 2px solid transparent;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .try-btn:hover { border-color: var(--magic-cyan); background: rgba(0, 229, 255, 0.08); transform: translateY(-5px); }
+        .try-btn.correct { background: rgba(0, 229, 255, 0.25) !important; border-color: var(--magic-cyan) !important; box-shadow: 0 0 25px rgba(0,229,255,0.4); }
+        .try-btn.error { background: rgba(229, 9, 20, 0.25); border-color: var(--brand-red); }
+
+        /* Speaking Hub Fixo */
+        .speaking-hub {
+            position: fixed;
+            bottom: 110px;
+            left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1300px;
+            background: rgba(5, 7, 15, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-top: 3px solid var(--magic-cyan);
+            border-radius: 16px;
+            padding: 30px 45px;
+            z-index: 150;
+            box-shadow: 0 -15px 60px rgba(0,0,0,0.95);
+            display: none;
+        }
+        .speaking-hub.active { display: block; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        
+        .hub-header { color: var(--magic-cyan); font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        .hub-question { font-size: 1.7rem; font-weight: 500; margin-bottom: 20px; color: white; line-height: 1.4; }
+        .starter-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #ddd; padding: 12px 25px; border-radius: 40px; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+        }
+        .starter-btn:hover { background: white; color: black; border-color: white; transform: scale(1.05); }
+        .starter-btn.clicked { background: var(--magic-cyan); color: black; font-weight: bold; border-color: var(--magic-cyan); }
+
+        /* Barra de Controle (Player) */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 110px;
+            background: #000; z-index: 160; border-top: 1px solid #1a1a1a;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 5%;
+        }
+        .nav-btn {
+            background: transparent; border: 1px solid #333; color: white; padding: 14px 28px;
+            font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 600;
+        }
+        .nav-btn:hover:not(:disabled) { border-color: var(--magic-gold); color: var(--magic-gold); }
+        .nav-btn.next { background: white; color: black; border: none; font-size: 20px; border-radius: 40px; padding: 16px 45px; display: flex; align-items: center; gap: 12px; font-weight: 700; box-shadow: 0 0 20px rgba(255,255,255,0.3);}
+        .nav-btn.next:hover:not(:disabled) { background: var(--magic-gold); transform: scale(1.06); }
+        .nav-btn.skip { border-color: transparent; color: #555; font-size: 14px; font-weight: 400; }
+        .nav-btn.skip:hover { color: white; text-decoration: underline; }
+
+        .progress-container { position: fixed; bottom: 110px; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.05); z-index: 155; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--magic-cyan), var(--magic-gold)); width: 0%; transition: 0.6s; box-shadow: 0 0 20px var(--magic-gold); }
+
+        /* Sidebar Dictionary */
+        .sidebar-panel {
+            position: fixed; top: 0; right: -550px; width: 550px; height: 100vh;
+            background: rgba(5, 7, 12, 0.99); z-index: 210; padding: 70px 50px;
+            transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column; border-left: 2px solid var(--glass-border);
+            box-shadow: -30px 0 100px rgba(0,0,0,1);
+        }
+        .sidebar-panel.open { right: 0; }
+        .sidebar-close { align-self: flex-end; cursor: pointer; font-size: 35px; color: white; background: rgba(255,255,255,0.05); border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; margin-bottom: 30px; transition: 0.3s;}
+        .sidebar-close:hover { background: var(--brand-red); transform: rotate(90deg); }
+
+        .dict-word { font-family: var(--font-title); font-size: 4.5rem; color: var(--magic-gold); margin-bottom: 20px; text-shadow: 0 0 20px rgba(212,175,55,0.3); text-transform: uppercase; }
+        .dict-label { color: var(--magic-cyan); font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 3px; margin-bottom: 10px; margin-top: 30px; font-weight: bold; }
+        .dict-text { font-size: 1.5rem; line-height: 1.6; color: white; }
+        .dict-synonyms { color: var(--magic-gold); font-size: 1.1rem; margin-top: 10px; }
+
+        /* Video Slide */
+        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 30px 100px rgba(0,0,0,1); }
+
+        /* Clicáveis em Ouro */
+        .clickable { color: var(--magic-gold); border-bottom: 2px dashed var(--magic-gold); cursor: pointer; transition: 0.3s; padding: 0 6px; font-weight: 700; }
+        .clickable:hover { background: rgba(212, 175, 55, 0.2); border-radius: 4px; }
+        
+        .step-info { color: white; font-size: 20px; font-family: var(--font-title); letter-spacing: 2px; }
+        .step-info span { color: var(--magic-gold); font-weight: 900; }
+
+        @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 0.7; } }
+        .pulse { animation: pulse 2s infinite alternate; }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Barra Superior -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo">WOLFLIX</div>
+            <div class="labs-badge">Interactive Cinema</div>
+        </div>
+        <div class="nav-controls">
+            <button class="icon-btn" onclick="toggleSidebar('whiteboard')">✧ Whiteboard</button>
+            <button class="icon-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        </div>
+    </nav>
+
+    <!-- Sidebars -->
+    <div class="sidebar-panel" id="whiteboard">
+        <button class="sidebar-close" onclick="toggleSidebar('whiteboard')">✕</button>
+        <h2 style="color: var(--magic-cyan); font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 25px;">Live Notes</h2>
+        <textarea placeholder="Type corrections, vocabulary or magic rules here..."></textarea>
+    </div>
+
+    <div class="sidebar-panel" id="vocab-panel" style="border-left-color: var(--magic-gold);">
+        <button class="sidebar-close" onclick="toggleSidebar('vocab-panel')">✕</button>
+        <h1 id="v-word" class="dict-word">Word</h1>
+        <div class="dict-label">Meaning</div>
+        <p id="v-meaning" class="dict-text">...</p>
+        <div id="v-syns" class="dict-synonyms">Synonyms: ...</div>
+        <div class="dict-label">Example</div>
+        <p id="v-example" class="dict-text" style="font-style: italic; color: #ccc; border-left: 3px solid var(--magic-cyan); padding-left: 20px;">...</p>
+        <div style="margin-top: auto; padding: 30px; background: rgba(0,229,255,0.08); border-radius: 15px; border: 1px solid rgba(0,229,255,0.2);">
+            <div class="dict-label" style="margin-top: 0;">Speaking Challenge</div>
+            <p id="v-question" style="font-size: 1.3rem; margin-top: 15px; color: white;">...</p>
+        </div>
+    </div>
+
+    <main class="slide-container" id="slides-container">
+        
+        <!-- 1. GUIDE -->
+        <div class="slide" data-hub="false">
+            <div class="content-wrapper">
+                <h2>Director's Briefing</h2>
+                <div class="glass-panel">
+                    <p style="color: var(--magic-cyan); font-weight: bold; font-family: var(--font-title); font-size: 1.8rem; margin-bottom: 20px;">INTERACTIVE B1 EXPERIENCE</p>
+                    <ul style="list-style: none; color: #ccc; font-size: 1.5rem; line-height: 2.2;">
+                        <li><span style="color: var(--magic-gold);">✦</span> <b>40 Scenes:</b> A complete cinema-style session.</li>
+                        <li><span style="color: var(--magic-gold);">✦</span> <b>Clickable Magic:</b> Golden words unlock definitions in the Sidebar.</li>
+                        <li><span style="color: var(--magic-gold);">✦</span> <b>Constant Speaking:</b> Use the Speaking Hub on every slide.</li>
+                        <li><span style="color: var(--magic-gold);">✦</span> <b>3-TRY Lock:</b> Interaction slides open NEXT after the 3rd attempt.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. COVER -->
+        <div class="slide" data-hub="true" data-question="If you could attend Hogwarts today, what would be your favorite class?" data-s1="If I went to Hogwarts, I would love..." data-s2="I think Potions would be...">
+            <div class="content-wrapper">
+                <div style="color: var(--magic-gold); font-family: var(--font-title); font-size: 1.5rem; letter-spacing: 6px; margin-bottom: 15px;">WOLFLIX ORIGINALS</div>
+                <h1>RETURN TO HOGWARTS</h1>
+                <p style="font-family: var(--font-title); font-size: 2rem; letter-spacing: 10px; color: var(--text-muted);">The HBO Teaser Experience</p>
+                <div style="display: flex; gap: 25px; justify-content: center; margin-top: 40px;">
+                    <span style="border: 2px solid var(--magic-gold); color: var(--magic-gold); padding: 8px 20px; font-weight: bold; border-radius: 4px; font-size: 1.3rem;">B1 INTERMEDIATE</span>
+                    <span style="color: #ccc; font-size: 1.4rem;">2026 REBOOT</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. WARM UP 1 -->
+        <div class="slide" data-hub="true" data-question="If you discovered that you had magic today, what would you do?" data-s1="If I found out I had magic, I would..." data-s2="The first thing I would do is...">
+            <div class="content-wrapper">
+                <h2>The Discovery</h2>
+                <div class="glass-panel">
+                    <p>Harry thought he was an ordinary boy. He lived in a house where magic was a "bad word".</p>
+                    <p>Suddenly, the past returns. Secrets are <span class="clickable" onclick="openDict('Unearth', 'To discover something that was hidden or secret.', 'They unearthed the family secret.', 'What is a secret you would like to unearth?', 'Reveal, Find')">unearthed</span>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. WARM UP 2 -->
+        <div class="slide" data-hub="true" data-question="Why do people want to be 'normal' all the time?" data-s1="I think being normal is..." data-s2="If I were different, people would...">
+            <div class="content-wrapper">
+                <h2>The Fear of Difference</h2>
+                <p>Uncle Vernon is obsessed with being <span class="clickable" onclick="openDict('Normal', 'Ordinary or usual. Not strange.', 'They wanted a normal life.', 'How would your life change if you were special?', 'Regular, Common')">normal</span>. He is afraid of anything special.</p>
+                <div class="glass-panel" style="border-left: 6px solid var(--brand-red);">
+                    <p style="font-style: italic; font-size: 1.8rem; margin: 0;">"There is nothing special about you."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. AUDITORY PREDICTION (AS PER IMAGE) -->
+        <div class="slide" data-hub="true" data-question="Based on the audio alone, what GENRE is this trailer leaning towards?" data-s1="Based on the sounds, it must be..." data-s2="If I heard a broken piano, I would think...">
+            <div class="content-wrapper">
+                <h2 class="red-title">Auditory Prediction</h2>
+                <p style="font-size: 1.6rem;">Before we see anything, let's establish the atmosphere. Imagine hearing these three sounds in sequence:</p>
+                <div class="glass-panel" style="background: transparent; border: none; box-shadow: none;">
+                    <ul class="dark-list">
+                        <li>1. A <span class="clickable" onclick="openDict('Whimsical', 'Magical, playful, and fantastic.', 'The piano played a whimsical melody.', 'Do you prefer whimsical stories or dark ones?', 'Magical, Fanciful')">whimsical</span> melody played slowly on a broken piano.</li>
+                        <li>2. The sound of heavy rain hitting stone.</li>
+                        <li>3. A deep, <span class="clickable" onclick="openDict('Unrecognizable', 'Impossible to know who or what it is.', 'The voice was unrecognizable.', 'If you heard an unrecognizable voice at night, what would you do?', 'Unknown, Mysterious')">unrecognizable</span> voice <span class="clickable" onclick="openDict('Whispering', 'Speaking very softly and quietly.', 'He was whispering in my ear.', 'When do you usually need to whisper?', 'Mumbling, Quiet speaking')">whispering</span> a single word.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6-10. VOCABULARY -->
+        <div class="slide" data-hub="true" data-question="If you were a king, what kind of legacy would you leave?" data-s1="I would like to leave a legacy of..." data-s2="My legacy would be...">
+            <div class="content-wrapper"><h2>Word 1: <span class="clickable" onclick="openDict('Legacy', 'History or heritage from parents.', 'His legacy is magic.', 'If you inherited a great legacy, would you be happy?')">Legacy</span></h2></div>
+        </div>
+        <div class="slide" data-hub="true" data-question="If a giant man threatened you, how would you respond?" data-s1="If he threatened me, I would..." data-s2="I would try to escape if...">
+            <div class="content-wrapper"><h2>Word 2: <span class="clickable" onclick="openDict('Threaten', 'To say you will hurt or cause trouble.', 'He threatened to lock him in.', 'Has anyone ever threatened you with a bad grade?')">Threaten</span></h2></div>
+        </div>
+        <div class="slide" data-hub="true" data-question="What makes you frightened? Spiders or snakes?" data-s1="I am frightened of... because..." data-s2="If I saw a ghost, I would be...">
+            <div class="content-wrapper"><h2>Word 3: <span class="clickable" onclick="openDict('Frightened', 'Afraid or very scared.', 'The adults are frightened of magic.', 'Why are people frightened of the unknown?')">Frightened</span></h2></div>
+        </div>
+        <div class="slide" data-hub="true" data-question="Who is the most clever person you know?" data-s1="My friend is clever because..." data-s2="If I were more clever, I would...">
+            <div class="content-wrapper"><h2>Word 4: <span class="clickable" onclick="openDict('Clever', 'Smart, intelligent, or skillful.', 'She is a clever wizard.', 'How can you become more clever?')">Clever</span></h2></div>
+        </div>
+        <div class="slide" data-hub="true" data-question="What is the most brave thing you have ever done?" data-s1="The bravest thing I did was..." data-s2="If I were more brave, I would...">
+            <div class="content-wrapper"><h2>Word 5: <span class="clickable" onclick="openDict('Brave', 'Having courage; not afraid.', 'His parents were brave.', 'Is it easy to be brave in a difficult situation?')">Brave</span></h2></div>
+        </div>
+
+        <!-- 11. VIEWING MOMENT (MOVED EARLIER) -->
+        <div class="slide" data-hub="false">
+            <div class="content-wrapper">
+                <h2 style="color: var(--magic-gold);">TEASER PREMIERE</h2>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/RIu4sFKGi6E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+                <p style="margin-top: 25px; color: var(--magic-cyan);" class="pulse">WATCH THE TRANSITIONS. OBSERVE THE TONE.</p>
+            </div>
+        </div>
+
+        <!-- 12. REACTION -->
+        <div class="slide" data-hub="true" data-question="Did the video make you feel nostalgic or nervous?" data-s1="I felt nostalgic because..." data-s2="The video made me nervous because...">
+            <div class="content-wrapper">
+                <h2>The Screen Goes Black...</h2>
+                <div class="grid-options">
+                    <div class="try-btn" onclick="highlightChoice(this)">Chills (Excited)</div>
+                    <div class="try-btn" onclick="highlightChoice(this)">Skeptical (Uncertain)</div>
+                    <div class="try-btn" onclick="highlightChoice(this)">Impressed (Happy)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. SCRIPT ANALYSIS 1 -->
+        <div class="slide" data-hub="true" data-question="If your parents lied to you, would you forgive them?" data-s1="If they lied, I would..." data-s2="I wouldn't forgive them if the lie was...">
+            <div class="content-wrapper">
+                <h2>Vernon's Lies</h2>
+                <div class="glass-panel">
+                    <p style="font-family: var(--font-title); font-size: 2rem; color: var(--brand-red);">"I told you, you are a normal boy..."</p>
+                </div>
+                <p>Vernon is "gaslighting" Harry. Discuss why adults hide the truth from children.</p>
+            </div>
+        </div>
+
+        <!-- 14. SCRIPT ERROR (3-TRY) -->
+        <div class="slide" data-lock="true" data-hub="true" data-question="Why does he want Harry to act 'normal'?" data-s1="He wants that because..." data-s2="If Harry acted special, people would...">
+            <div class="content-wrapper">
+                <h2>Find the Word</h2>
+                <div class="glass-panel">
+                    <p>"...and you're going to start acting like ___________."</p>
+                </div>
+                <div class="grid-options" id="q-script">
+                    <button class="try-btn" onclick="checkAnswer(this, false, 'q2')">A Wizard</button>
+                    <button class="try-btn" onclick="checkAnswer(this, true, 'q2')">One (a boy)</button>
+                    <button class="try-btn" onclick="checkAnswer(this, false, 'q2')">Him</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15-20. SCRIPT & VISUAL DEBRIEF -->
+        <div class="slide" data-hub="true" data-question="If you saw a giant breaking your door, would you fight or hide?" data-s1="If I saw a giant, I would..." data-s2="I would probably hide under the..."><div class="content-wrapper"><h2>The Promise: "Next time I see you, we'll be in Hogwarts."</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you were the new Harry, would you be scared of the fame?" data-s1="If I were the actor, I would be..." data-s2="I wouldn't be scared if I had..."><div class="content-wrapper"><h2>Visual Analysis: The Boy's fragile appearance.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If the station were real, where would it be hidden?" data-s1="I think the entrance would be in..." data-s2="It would be hidden in a..."><div class="content-wrapper"><h2>Symbolism: The steam from the train.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you could buy any magical animal, which one would you pick?" data-s1="If I could buy an animal, I would pick an..." data-s2="An owl would be great for..."><div class="content-wrapper"><h2>The Owl: A message from another world.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If magic existed, would our world be better?" data-s1="If magic were real, the world would be..." data-s2="I think it would be dangerous because..."><div class="content-wrapper"><h2>The Dark Lighting: The series feels more "adult".</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you were a teacher at Hogwarts, what would you teach?" data-s1="If I were a teacher, I would teach..." data-s2="Potions would be my favorite because..."><div class="content-wrapper"><h2>The Professors: They seem strict and serious.</h2></div></div>
+
+        <!-- 21-25. GRAMMAR JOURNEY -->
+        <div class="slide" data-hub="true" data-question="If you could change the director, who would you hire?" data-s1="If I could choose, I would hire..." data-s2="Steven Spielberg would be good because..."><div class="content-wrapper"><h2>Imaginary Situations: The Second Conditional.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="Read the rule aloud. Is it easy or difficult?" data-s1="The rule is easy because..." data-s2="I think it is difficult to remember..."><div class="content-wrapper"><div class="glass-panel"><h3>IF + PAST SIMPLE → WOULD + VERB</h3></div></div></div>
+        <div class="slide" data-lock="true" data-hub="true" data-question="Complete: If I ____ (be) you, I ____ (go)." data-s1="If I were you, I would go..." data-s2="I would go if I were you..."><div class="content-wrapper">
+            <div class="grid-options" id="g-q1">
+                <button class="try-btn" onclick="checkAnswer(this, true, 'g1')">If I were you, I would go.</button>
+                <button class="try-btn" onclick="checkAnswer(this, false, 'g1')">If I was you, I will go.</button>
+            </div>
+        </div></div>
+        <div class="slide" data-hub="true" data-question="Finish: 'If I had a flying car, I would...'" data-s1="If I had a flying car, I would fly to..." data-s2="I would use it to travel to..."><div class="content-wrapper"><h2>Oral Practice: The Flying Car.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you were trapped in the cupboard, what would you do?" data-s1="If I were trapped, I would..." data-s2="I would use magic to open..."><div class="content-wrapper"><h2>Scenario: The Locked Cupboard.</h2></div></div>
+
+        <!-- 26-30. LIVE CHAT & DECISIONS -->
+        <div class="slide" data-lock="true" data-hub="true" data-question="What should Harry do?" data-s1="If I were Harry, I would..." data-s2="He should probably..."><div class="content-wrapper">
+            <div class="chat-box">
+                <div class="msg msg-l">Help! Vernon locked the door! 😭</div>
+                <div class="msg msg-r" id="c1">...</div>
+            </div>
+            <div class="grid-options" id="chat-q1">
+                <button class="try-btn" onclick="checkAnswer(this, true, 'c1', 'If I were you, I would use a spell!')">If I were you, I would use a spell!</button>
+                <button class="try-btn" onclick="checkAnswer(this, false, 'c1')">If I am you, I will help.</button>
+            </div>
+        </div></div>
+        <div class="slide" data-hub="true" data-question="Why did you choose to FIGHT?" data-s1="I chose to fight because..." data-s2="Fighting is better because..."><div class="content-wrapper"><h2>Decision: Fight the giant with an umbrella.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="Why did you choose to RUN?" data-s1="I chose to run because..." data-s2="Running is safer if..."><div class="content-wrapper"><h2>Decision: Run into the forest.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="Why did you choose to LISTEN?" data-s1="I chose to listen because..." data-s2="Listening is the best choice if..."><div class="content-wrapper"><h2>Decision: Listen to Hagrid.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you had to choose a side, would you be a Hero or a Villain?" data-s1="If I had to choose, I would be a..." data-s2="Villains are more interesting because..."><div class="content-wrapper"><h2>Moral Choice: Hero vs Villain.</h2></div></div>
+
+        <!-- 31-40. FINAL ROUNDS -->
+        <div class="slide" data-hub="true" data-question="If you were 11, would you leave your family for school?" data-s1="If I were 11, I would go to school..." data-s2="I wouldn't leave my parents because..."><div class="content-wrapper"><h2>Cultural Debate: Boarding Schools.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If a Dementor attacked you, what memory would you use?" data-s1="If I were attacked, I would think of..." data-s2="My happy memory would be..."><div class="content-wrapper"><h2>Facing Fear: The Patronus.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you found a mirror that showed your desires, what would you see?" data-s1="I would see myself in..." data-s2="The mirror would show me..."><div class="content-wrapper"><h2>Desire: The Mirror of Erised.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If you could change one scene, which one would it be?" data-s1="If I could change a scene, I would..." data-s2="The scene where Harry... should be..."><div class="content-wrapper"><h2>Director's Chair.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="What will happen in Episode 1?" data-s1="In Episode 1, Harry would..." data-s2="If the series follows the book..."><div class="content-wrapper"><h2>The Plot Prediction.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="Draw your character and speak!" data-s1="As the giant, I would say..." data-s2="If I were the uncle..."><div class="content-wrapper">
+            <button class="nav-btn next" onclick="drawRole(this)" style="margin: 0 auto; background: var(--magic-gold); color: black;">DRAW CHARACTER</button>
+            <h1 id="r-name" style="display:none; color: var(--magic-cyan);">...</h1>
+            <p id="r-task" style="display:none;"></p>
+        </div></div>
+        <div class="slide" data-hub="true" data-question="If you were a ghost at Hogwarts, who would you scare?" data-s1="If I were a ghost, I would scare..." data-s2="I would hide in the..."><div class="content-wrapper"><h2>Final Fun: The Ghost of Hogwarts.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="If magic cost money, would you still want it?" data-s1="If magic were expensive, I would..." data-s2="I wouldn't want magic if it cost..."><div class="content-wrapper"><h2>The Price of Power.</h2></div></div>
+        <div class="slide" data-hub="true" data-question="How did the magical design help your English today?" data-s1="The design made the lesson..." data-s2="If the lesson were normal, I would..."><div class="content-wrapper"><h2>Metacognition.</h2></div></div>
+        <div class="slide" data-hub="false">
+            <div class="content-wrapper">
+                <h1 style="color: var(--magic-gold);">EXPEDITION COMPLETE</h1>
+                <div class="glass-panel" style="max-width: 600px; margin: 0 auto;">
+                    <p style="color: var(--magic-cyan); font-weight: bold; font-family: var(--font-title);">SESSION LOG:</p>
+                    <ul style="list-style: none; font-size: 1.4rem; line-height: 2.2;">
+                        <li>✔️ Unlocked 5 Magic Words</li>
+                        <li>✔️ Watched the HBO Premiere</li>
+                        <li>✔️ Mastered the 2nd Conditional</li>
+                        <li>✔️ Spoke for 80% of the session</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- HUB DE CONVERSAÇÃO -->
+    <div class="speaking-hub" id="speaking-hub">
+        <div class="hub-header">🎙️ SPEAKING HUB (80% TIME)</div>
+        <p class="hub-question" id="hub-q">Question?</p>
+        <div class="starters-container" id="hub-starters"></div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="bottom-bar">
+        <button class="nav-btn" id="prev-btn" onclick="prevSlide()" disabled>BACK</button>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <button class="nav-btn skip" onclick="forceNext()">SKIP ⏭</button>
+            <div class="step-info" id="step-id">SCENE <span>1</span> / 40</div>
+            <button class="nav-btn next" id="next-btn" onclick="nextSlide()">NEXT</button>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="p-bar"></div>
+    </div>
+
+    <script>
+        let cur = 0;
+        const slides = document.querySelectorAll('.slide');
+        const tries = { q1: 0, q2: 0, g1: 0, c1: 0 };
+
+        function update() {
+            slides.forEach((s, i) => s.classList.toggle('active', i === cur));
+            
+            const hub = document.getElementById('speaking-hub');
+            const s = slides[cur];
+            
+            if(s.dataset.hub === 'true') {
+                hub.classList.add('active');
+                document.getElementById('hub-q').innerText = s.dataset.question;
+                let html = '';
+                if(s.dataset.s1) html += `<button class="starter-btn" onclick="this.classList.add('clicked')">${s.dataset.s1}</button>`;
+                if(s.dataset.s2) html += `<button class="starter-btn" onclick="this.classList.add('clicked')">${s.dataset.s2}</button>`;
+                document.getElementById('hub-starters').innerHTML = html;
+            } else { hub.classList.remove('active'); }
+
+            document.getElementById('next-btn').disabled = (s.dataset.lock === 'true');
+            document.getElementById('prev-btn').disabled = (cur === 0);
+            document.getElementById('step-id').innerHTML = `SCENE <span>${cur + 1}</span> / 40`;
+            document.getElementById('p-bar').style.width = `${((cur) / (slides.length - 1)) * 100}%`;
+            
+            // Garantir scroll para o topo
+            document.getElementById('slides-container').scrollTop = 0;
+        }
+
+        function nextSlide() { if(cur < slides.length - 1) { cur++; update(); } }
+        function prevSlide() { if(cur > 0) { cur--; update(); } }
+        function forceNext() { slides[cur].dataset.lock = "false"; nextSlide(); }
+
+        function toggleSidebar(id) { 
+            document.querySelectorAll('.sidebar-panel').forEach(p => { if(p.id !== id) p.classList.remove('open'); });
+            document.getElementById(id).classList.toggle('open'); 
+        }
+
+        function openDict(w, m, e, q, s = "") {
+            document.getElementById('v-word').innerText = w;
+            document.getElementById('v-meaning').innerText = m;
+            document.getElementById('v-syns').innerText = s ? "Synonyms: " + s : "";
+            document.getElementById('v-example').innerText = `"${e}"`;
+            document.getElementById('v-question').innerText = q;
+            toggleSidebar('vocab-panel');
+        }
+
+        function checkAnswer(btn, isCorrect, id, chatText) {
+            if(isCorrect) {
+                btn.classList.add('correct');
+                if(chatText) document.getElementById(id).innerText = chatText;
+                setTimeout(() => { slides[cur].dataset.lock = "false"; update(); }, 500);
+            } else {
+                tries[id]++;
+                btn.classList.add('shake', 'error');
+                setTimeout(() => btn.classList.remove('shake', 'error'), 400);
+                if(tries[id] >= 3) {
+                    Array.from(btn.parentElement.children).forEach(b => { if(b.getAttribute('onclick').includes('true')) b.classList.add('correct'); });
+                    slides[cur].dataset.lock = "false"; update();
+                }
+            }
+        }
+
+        function drawRole(btn) {
+            const r = [
+                {n: "The Angry Uncle", t: "Try to convince Harry that magic is fake and dangerous."},
+                {n: "The Giant (Hagrid)", t: "Tell the Uncle why Harry MUST go to school now!"},
+                {n: "The Secretive Aunt", t: "Explain why you hidden the truth for 11 years."}
+            ];
+            const pick = r[Math.floor(Math.random()*r.length)];
+            document.getElementById('r-name').innerText = pick.n;
+            document.getElementById('r-task').innerText = pick.t;
+            document.getElementById('r-name').style.display = 'block';
+            document.getElementById('r-task').style.display = 'block';
+            btn.style.display = 'none';
+        }
+
+        function highlightChoice(btn) {
+            Array.from(btn.parentElement.children).forEach(b => b.classList.remove('correct'));
+            btn.classList.add('correct');
+        }
+
+        function toggleFullscreen() {
+            try {
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
+            } catch (e) {
+                console.error("Fullscreen disallowed by policy.", e);
+            }
+        }
+
+        update();
+    </script>
+</body>
+</html>
